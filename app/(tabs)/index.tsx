@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import {
   StyleSheet, View, ActivityIndicator, Text,
-  TouchableOpacity, Linking, Animated, ScrollView, Modal, TextInput
+  TouchableOpacity, Linking, Animated, ScrollView, Modal, TextInput, Image
 } from 'react-native';
 import MapView, { Marker, Polygon } from 'react-native-maps';
-import FelicidadSvg from '../../assets/images/Felicidad.svg';
-import NeutroSvg from '../../assets/images/EmocionesEncontradas.svg';
-import TristeSvg from '../../assets/images/Tristeza.svg';
+const FelicidadSvg = require('../../assets/images/Felicidad.png');
+const NeutroSvg = require('../../assets/images/Emociones encontradas.png');
+const TristeSvg = require('../../assets/images/Tristeza.png');
 
-const API_URL = 'https://noubarris-backend-production.up.railway.app/api/centros';
-const RESENAS_URL = 'https://noubarris-backend-production.up.railway.app/api/resenas';
+const API_URL = 'https://noubarris-backend.onrender.com/api/centros';
+const RESENAS_URL = 'https://noubarris-backend.onrender.com/api/resenas';
 
 const worldCoords = [
   { latitude: 85, longitude: -180 },
@@ -192,23 +192,23 @@ const siluetaNouBarris = [
 ];
 
 const coloresCategorias: { [key: string]: string } = {
-  'Centros de salud': '#E53935',
+  'Salud': '#E53935',
   'Seguridad': '#1E88E5',
   'Bibliotecas': '#8E24AA',
-  'Espacios culturales': '#F4511E',
-  'Oficinas generales de atención': '#43A047',
+  'Culturales': '#F4511E',
+  'Oficinas': '#43A047',
   'Servicios Sociales': '#FFB300',
-  'Centros educativos': '#00ACC1',
+  'Educativos': '#00ACC1',
 };
 
 const iconosCategorias: { [key: string]: string } = {
-  'Centros de salud': '🏥',
+  'Salud': '🏥',
   'Seguridad': '🚔',
   'Bibliotecas': '📚',
-  'Espacios culturales': '🎭',
-  'Oficinas generales de atención': '🏛️',
+  'Culturales': '🎭',
+  'Oficinas': '🏛️',
   'Servicios Sociales': '🤝',
-  'Centros educativos': '🎓',
+  'Educativos': '🎓',
 };
 
 type Centro = {
@@ -246,12 +246,13 @@ export default function PantallaMapa() {
   const [valoracionNino, setValoracionNino] = useState<number | null>(null);
   const [respAdulto, setRespAdulto] = useState<RespuestasAdulto>(respuestasVacias);
   const [enviando, setEnviando] = useState(false);
+  const [filtroActivo, setFiltroActivo] = useState<string | null>(null);
   const panelAnim = useState(new Animated.Value(0))[0];
 
   useEffect(() => {
     fetch(API_URL)
       .then((res) => res.json())
-      .then((data) => { setCentros(data); setCargando(false); })
+      .then((data) => { setCentros(Array.isArray(data) ? data : []); setCargando(false); })
       .catch(() => {
         setError('No se pudo conectar al servidor.\nAsegúrate de estar en la misma red Wi-Fi.');
         setCargando(false);
@@ -380,20 +381,55 @@ export default function PantallaMapa() {
       >
         <Polygon coordinates={worldCoords} fillColor="rgba(0,0,0,0.5)" strokeColor="transparent" zIndex={1} />
         <Polygon coordinates={siluetaNouBarris} fillColor="rgba(0,0,0,0)" strokeColor="rgba(255,255,255,0.4)" strokeWidth={2} zIndex={2} />
-        {centros.map((centro) => {
-          const lat = parseFloat(centro.latitud);
-          const lon = parseFloat(centro.longitud);
-          if (isNaN(lat) || isNaN(lon)) return null;
-          return (
-            <Marker key={centro.id} coordinate={{ latitude: lat, longitude: lon }}
-              pinColor={coloresCategorias[centro.categoria] || '#757575'} zIndex={3}
-              onPress={(e) => { e.stopPropagation(); abrirPanel(centro); }}
-            />
-          );
-        })}
+        {centros
+          .filter(c => !filtroActivo || c.categoria === filtroActivo)
+          .map((centro) => {
+            const lat = parseFloat(centro.latitud);
+            const lon = parseFloat(centro.longitud);
+            if (isNaN(lat) || isNaN(lon)) return null;
+            return (
+              <Marker key={centro.id} coordinate={{ latitude: lat, longitude: lon }}
+                pinColor={coloresCategorias[centro.categoria] || '#757575'} zIndex={3}
+                onPress={(e) => { e.stopPropagation(); abrirPanel(centro); }}
+              />
+            );
+          })}
       </MapView>
 
       {/* PANEL INFERIOR */}
+      {/* FILTROS */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.filtrosContainer}
+        contentContainerStyle={styles.filtrosContent}
+      >
+        {Object.entries(coloresCategorias).map(([cat, color]) => (
+          <TouchableOpacity
+            key={cat}
+            style={[
+              styles.filtroChip,
+              { borderColor: color },
+              filtroActivo === cat && { backgroundColor: color },
+            ]}
+            onPress={() => setFiltroActivo(filtroActivo === cat ? null : cat)}
+          >
+            <Text style={[
+              styles.filtroTexto,
+              { color: filtroActivo === cat ? '#fff' : color },
+            ]}>
+              {iconosCategorias[cat]} {cat}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
+      {/* BOTÓN FLOTANTE CUENTO CONTIGO */}
+      {centroSeleccionado && (
+        <TouchableOpacity style={styles.botonFlotante} onPress={abrirModal}>
+          <Text style={styles.botonFlotanteTexto}>💬 Cuento contigo</Text>
+        </TouchableOpacity>
+      )}
       {centroSeleccionado && (
         <Animated.View style={[styles.panel, { transform: [{ translateY: panelTranslate }] }]}>
           <View style={[styles.panelBarra, { backgroundColor: color }]} />
@@ -441,12 +477,12 @@ export default function PantallaMapa() {
                 <Text style={styles.modalSubtitulo}>Elige tu perfil para responder</Text>
                 <View style={styles.elegirFila}>
                   <TouchableOpacity style={styles.elegirBoton} onPress={() => setPasoModal('nino')}>
-                    <Text style={styles.elegirEmoji}>👦</Text>
-                    <Text style={styles.elegirTexto}>Soy niño</Text>
+                    <Text style={styles.elegirEmoji}>👤</Text>
+                    <Text style={styles.elegirTexto}>Persona menor</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.elegirBoton} onPress={() => setPasoModal('adulto')}>
-                    <Text style={styles.elegirEmoji}>👨</Text>
-                    <Text style={styles.elegirTexto}>Soy adulto</Text>
+                    <Text style={styles.elegirEmoji}>👤</Text>
+                    <Text style={styles.elegirTexto}>Persona adulta</Text>
                   </TouchableOpacity>
                 </View>
                 <TouchableOpacity onPress={cerrarModal}>
@@ -458,20 +494,20 @@ export default function PantallaMapa() {
             {/* FORMULARIO NIÑO */}
             {pasoModal === 'nino' && (
               <>
-                <Text style={styles.modalTitulo}>👦 ¡Tu opinión importa!</Text>
-                <Text style={styles.modalPregunta}>¿Te lo has pasado bien aquí?</Text>
+                <Text style={styles.modalTitulo}>👤 ¡Tu opinión importa!</Text>
+                <Text style={styles.modalPregunta}>¿Como te han atendido aqui?</Text>
                 <View style={styles.caritasFila}>
                   {[
-                    { val: 3, Svg: FelicidadSvg, texto: '¡Sí!' },
+                    { val: 3, Svg: FelicidadSvg, texto: '¡Bien!' },
                     { val: 2, Svg: NeutroSvg, texto: 'Más o menos' },
-                    { val: 1, Svg: TristeSvg, texto: 'No mucho' },
+                    { val: 1, Svg: TristeSvg, texto: 'Mal' },
                   ].map((item) => (
                     <TouchableOpacity
                       key={item.val}
                       style={[styles.caritaBoton, valoracionNino === item.val && styles.caritaSeleccionada]}
                       onPress={() => setValoracionNino(item.val)}
                     >
-                      <item.Svg width={70} height={70} />
+                      <Image source={item.Svg} style={{ width: 70, height: 70, resizeMode: 'contain' }} />
                       <Text style={styles.caritaTexto}>{item.texto}</Text>
                     </TouchableOpacity>
                   ))}
@@ -492,11 +528,11 @@ export default function PantallaMapa() {
             {/* FORMULARIO ADULTO */}
             {pasoModal === 'adulto' && (
               <ScrollView showsVerticalScrollIndicator={false} style={{ width: '100%' }}>
-                <Text style={styles.modalTitulo}>👨 Tu opinión</Text>
+                <Text style={styles.modalTitulo}>👤 Tu opinión</Text>
                 <Text style={styles.modalSubtitulo}>Sobre la atención recibida en {centroSeleccionado?.nombre}</Text>
 
                 {/* P3 */}
-                <Text style={styles.pregunta}>3. ¿Te han atendido de forma correcta y respetuosa?</Text>
+                <Text style={styles.pregunta}>1. ¿Te han atendido de forma correcta y respetuosa?</Text>
                 {['Sí', 'No', 'Parcialmente'].map(op => (
                   <TouchableOpacity key={op} style={[styles.opcion, respAdulto.p3 === op && styles.opcionSeleccionada]} onPress={() => setRespAdulto(p => ({ ...p, p3: op }))}>
                     <Text style={[styles.opcionTexto, respAdulto.p3 === op && styles.opcionTextoSel]}>{op}</Text>
@@ -504,7 +540,7 @@ export default function PantallaMapa() {
                 ))}
 
                 {/* P4 */}
-                <Text style={styles.pregunta}>4. ¿Te has sentido escuchada/o durante la atención?</Text>
+                <Text style={styles.pregunta}>2. ¿Te has sentido escuchada/o durante la atención?</Text>
                 {['Sí, en todo momento', 'En parte', 'No'].map(op => (
                   <TouchableOpacity key={op} style={[styles.opcion, respAdulto.p4 === op && styles.opcionSeleccionada]} onPress={() => setRespAdulto(p => ({ ...p, p4: op }))}>
                     <Text style={[styles.opcionTexto, respAdulto.p4 === op && styles.opcionTextoSel]}>{op}</Text>
@@ -512,7 +548,7 @@ export default function PantallaMapa() {
                 ))}
 
                 {/* P5 */}
-                <Text style={styles.pregunta}>5. ¿Te han explicado claramente qué iban a hacer y cuáles eran tus opciones?</Text>
+                <Text style={styles.pregunta}>3. ¿Te han explicado claramente qué iban a hacer y cuáles eran tus opciones?</Text>
                 {['Sí', 'No', 'Solo en parte'].map(op => (
                   <TouchableOpacity key={op} style={[styles.opcion, respAdulto.p5 === op && styles.opcionSeleccionada]} onPress={() => setRespAdulto(p => ({ ...p, p5: op }))}>
                     <Text style={[styles.opcionTexto, respAdulto.p5 === op && styles.opcionTextoSel]}>{op}</Text>
@@ -520,7 +556,7 @@ export default function PantallaMapa() {
                 ))}
 
                 {/* P6 */}
-                <Text style={styles.pregunta}>6. ¿Han intentado comunicarse contigo en un idioma que entiendes?</Text>
+                <Text style={styles.pregunta}>4. ¿Han intentado comunicarse contigo en un idioma que entiendes?</Text>
                 {['Sí', 'No', 'No lo necesitaba'].map(op => (
                   <TouchableOpacity key={op} style={[styles.opcion, respAdulto.p6 === op && styles.opcionSeleccionada]} onPress={() => setRespAdulto(p => ({ ...p, p6: op }))}>
                     <Text style={[styles.opcionTexto, respAdulto.p6 === op && styles.opcionTextoSel]}>{op}</Text>
@@ -528,7 +564,7 @@ export default function PantallaMapa() {
                 ))}
 
                 {/* P7 - Multiopción */}
-                <Text style={styles.pregunta}>7. ¿Has sentido algún tipo de violencia? (Marca todas las que correspondan)</Text>
+                <Text style={styles.pregunta}>5. ¿Has sentido algún tipo de violencia? (Marca todas las que correspondan)</Text>
                 {['Ninguna', 'Violencia verbal', 'Violencia psicológica o emocional', 'Discriminación', 'Violencia física', 'Negligencia o dejadez', 'Otra'].map(op => (
                   <TouchableOpacity key={op} style={[styles.opcion, respAdulto.p7.includes(op) && styles.opcionSeleccionada]} onPress={() => toggleP7(op)}>
                     <Text style={[styles.opcionTexto, respAdulto.p7.includes(op) && styles.opcionTextoSel]}>{op}</Text>
@@ -544,7 +580,7 @@ export default function PantallaMapa() {
                 )}
 
                 {/* P8 */}
-                <Text style={styles.pregunta}>8. ¿Han tenido en cuenta tus necesidades personales o familiares?</Text>
+                <Text style={styles.pregunta}>6. ¿Han tenido en cuenta tus necesidades personales o familiares?</Text>
                 {['Sí', 'No', 'Parcialmente', 'No era necesario en mi caso'].map(op => (
                   <TouchableOpacity key={op} style={[styles.opcion, respAdulto.p8 === op && styles.opcionSeleccionada]} onPress={() => setRespAdulto(p => ({ ...p, p8: op }))}>
                     <Text style={[styles.opcionTexto, respAdulto.p8 === op && styles.opcionTextoSel]}>{op}</Text>
@@ -552,7 +588,7 @@ export default function PantallaMapa() {
                 ))}
 
                 {/* P9 */}
-                <Text style={styles.pregunta}>9. En general, ¿cómo valorarías la calidad de la atención recibida?</Text>
+                <Text style={styles.pregunta}>7. En general, ¿cómo valorarías la calidad de la atención recibida?</Text>
                 {['Muy buena', 'Buena', 'Regular', 'Mala', 'Muy mala'].map(op => (
                   <TouchableOpacity key={op} style={[styles.opcion, respAdulto.p9 === op && styles.opcionSeleccionada]} onPress={() => setRespAdulto(p => ({ ...p, p9: op }))}>
                     <Text style={[styles.opcionTexto, respAdulto.p9 === op && styles.opcionTextoSel]}>{op}</Text>
@@ -560,7 +596,7 @@ export default function PantallaMapa() {
                 ))}
 
                 {/* P10 */}
-                <Text style={styles.pregunta}>10. ¿Volverías a acudir a este centro si lo necesitaras?</Text>
+                <Text style={styles.pregunta}>8. ¿Volverías a acudir a este centro si lo necesitaras?</Text>
                 {['Sí', 'No', 'No lo sé'].map(op => (
                   <TouchableOpacity key={op} style={[styles.opcion, respAdulto.p10 === op && styles.opcionSeleccionada]} onPress={() => setRespAdulto(p => ({ ...p, p10: op }))}>
                     <Text style={[styles.opcionTexto, respAdulto.p10 === op && styles.opcionTextoSel]}>{op}</Text>
@@ -664,4 +700,27 @@ const styles = StyleSheet.create({
   botonEnviarDesactivado: { backgroundColor: '#ccc' },
   botonEnviarTexto: { color: '#fff', fontWeight: '700', fontSize: 16 },
   graciasEmoji: { fontSize: 56, marginBottom: 12 },
+  filtrosContainer: {
+    position: 'absolute', top: 50, left: 0, right: 0, zIndex: 10,
+  },
+  filtrosContent: {
+    paddingHorizontal: 12, gap: 8, flexDirection: 'row',
+  },
+  filtroChip: {
+    paddingHorizontal: 12, paddingVertical: 7, borderRadius: 20,
+    borderWidth: 2, backgroundColor: '#fff',
+    shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 4, elevation: 3,
+  },
+  filtroTexto: {
+    fontSize: 12, fontWeight: '700',
+  },
+  botonFlotante: {
+    position: 'absolute', bottom: 20, alignSelf: 'center',
+    backgroundColor: '#333', paddingHorizontal: 24, paddingVertical: 14,
+    borderRadius: 30, zIndex: 5,
+    shadowColor: '#000', shadowOpacity: 0.25, shadowRadius: 8, elevation: 8,
+  },
+  botonFlotanteTexto: {
+    color: '#fff', fontWeight: '800', fontSize: 16,
+  },
 });
