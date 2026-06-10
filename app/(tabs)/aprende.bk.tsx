@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
     StyleSheet, View, Text, TouchableOpacity,
-    ScrollView, Image, Dimensions
+    ScrollView, Image, Dimensions, Animated
 } from 'react-native';
 
 const { width } = Dimensions.get('window');
@@ -16,100 +16,58 @@ const CATEGORIAS = [
 const ESCENARIOS: { [key: string]: { imagen: any; pregunta: string; respuestaCorrecta: boolean; explicacion: string }[] } = {
     salud: [
         {
-            imagen: require('../../assets/images/Recepcion Salud.png'),
-            pregunta: '¿Te sentiste bien recibido/a al ingresar al centro de salud?',
+            imagen: require('../../assets/images/revision_salud.png'),
+            pregunta: '¿Tiene la doctora que explicarte lo que va a hacer antes de tocarte?',
             respuestaCorrecta: true,
-            explicacion: 'Debes sentirte bien recibido o recibida en los espacios públicos de atención. Deben hablar en calma y con palabras agradables. Siempre debes estar acompañado/a de una persona adulta.',
+            explicacion: '¡Correcto! Siempre tienen que explicarte lo que van a hacer. Tu cuerpo es tuyo y tienes derecho a saberlo.',
         },
         {
-            imagen: require('../../assets/images/Escucha Salud.png'),
-            pregunta: '¿La persona que te atendió escuchó cómo te sentías?',
+            imagen: require('../../assets/images/escucha_salud.png'),
+            pregunta: '¿Puedes contarle a la doctora cómo te sientes aunque sea difícil explicarlo?',
             respuestaCorrecta: true,
-            explicacion: 'Deben escuchar atentamente tus necesidades, es tu cuerpo el que revisarán y tienen que saber qué es lo que te pasa.',
-        },
-        {
-            imagen: require('../../assets/images/Revisión Salud.png'),
-            pregunta: '¿Te avisaron antes de tocar tu cuerpo para revisarlo?',
-            respuestaCorrecta: true,
-            explicacion: '¡Tu cuerpo es tuyo! Y deben explicarte que van a tocarlo para la revisión médica. Es importante que entiendas lo que están revisando de tu cuerpo y que te sientas seguro/a mientras lo hacen.',
-        },
-        {
-            imagen: require('../../assets/images/Salida cap.png'), 
-            pregunta: '¿Te has ido del centro de salud sintiéndote bien por el trato recibido?',
-            respuestaCorrecta: true,
-            explicacion: 'Muchas veces no nos agrada asistir a los centros de salud. Pero, si nos tratan bien y nos sentimos seguros/as, ¡la experiencia es mucho mejor! Asegúrate de haber recibido un buen trato.',
+            explicacion: '¡Sí! Siempre puedes contar cómo te sientes. El médico está ahí para escucharte.',
         },
     ],
     escuela: [
         {
-            imagen: require('../../assets/images/Entrada escuela.png'), // OK
-            pregunta: '¿Sientes que te reconocen cuando entras a la escuela?',
+            imagen: require('../../assets/images/entrada_escuela.png'),
+            pregunta: '¿Todos los niños y niñas tienen derecho a ir a la escuela?',
             respuestaCorrecta: true,
-            explicacion: 'Eres una persona importante. ¡Deben reconocerte y hacerte sentir parte de este espacio!',
-        },
-        {
-            imagen: require('../../assets/images/AulaEscuela.png'),
-            pregunta: '¿Te sientes seguro/a cuando una persona adulta habla contigo a solas en la escuela?',
-            respuestaCorrecta: true,
-            explicacion: 'En la escuela debes sentirte seguro/a. Si tuvieras que estar a solas con una persona adulta, deben tratarte con respeto y cuidado.',
+            explicacion: '¡Exacto! Todos los niños tienen derecho a la educación, sin importar de dónde vengan.',
         },
         {
             imagen: require('../../assets/images/patio_escuela.png'),
-            pregunta: '¿Sientes que puedes jugar libremente en el patio?',
-            respuestaCorrecta: true,
-            explicacion: 'El derecho a jugar es de todos y todas. Debes asistir a una escuela donde te sientas tranquilo/a para jugar y aprender.',
-        },
-        {
-            imagen: require('../../assets/images/Lavabos escuela.png'),
-            pregunta: '¿Puedes usar todos los espacios de la escuela cuando lo necesitas?',
-            respuestaCorrecta: true,
-            explicacion: 'Debes tener acceso y facilidad para estar en todos los espacios de la escuela. Debes sentirte cómodo/a y seguro/a.',
+            pregunta: '¿Está bien que un compañero te quite el bocadillo?',
+            respuestaCorrecta: false,
+            explicacion: '¡No está bien! Nadie puede quitarte lo que es tuyo. Puedes pedir ayuda a un adulto.',
         },
     ],
     cultural: [
         {
-            imagen: require('../../assets/images/Entrada casal.png'),
-            pregunta: '¿Las personas te reciben bien cuando llegas?',
+            imagen: require('../../assets/images/clase_cultural.png'),
+            pregunta: '¿Todos los niños pueden participar en los talleres, incluido el niño en silla de ruedas?',
             respuestaCorrecta: true,
-            explicacion: 'Eres una persona importante. ¡Deben reconocerte y hacerte sentir parte de este espacio!',
+            explicacion: '¡Sí! Todos los niños tienen derecho a participar en actividades culturales sin importar su condición.',
         },
         {
-            imagen: require('../../assets/images/Clasecultural.png'),
-            pregunta: '¿Sientes que todas las personas pueden participar en las actividades?',
-            respuestaCorrecta: true,
-            explicacion: 'Todas las personas tenemos derecho a participar de actividades que nos gusten. ¡Recuerda siempre participar con respeto en un grupo!',
-        },
-        {
-            imagen: require('../../assets/images/Escucha clase cultural.png'),
-            pregunta: '¿Sientes que las personas adultas del centro te escuchan cuando hablas?',
-            respuestaCorrecta: true,
-            explicacion: 'Tus emociones y sentimientos son muy importantes y valiosos. Debes sentir que te escuchan con atención y atienden a tus necesidades.',
+            imagen: require('../../assets/images/entrada_casal.png'),
+            pregunta: '¿Está bien que solo dejen entrar a algunos niños al casal?',
+            respuestaCorrecta: false,
+            explicacion: '¡No está bien! Los espacios públicos son para todos. Si te dicen que no puedes entrar sin razón, cuéntaselo a un adulto.',
         },
     ],
     seguridad: [
         {
-            imagen: require('../../assets/images/BomberosSeguridad.png'),
-            pregunta: '¿Crees que los y las bomberos te ayudarían si lo necesitas?',
+            imagen: require('../../assets/images/policias.png'),
+            pregunta: '¿Tiene el policía que explicarte por qué te para?',
             respuestaCorrecta: true,
-            explicacion: 'Los y las bomberos están para ayudar y proteger a las personas cuando ocurre una emergencia. Debes sentirte seguro/a y poder pedir ayuda si la necesitas.',
+            explicacion: '¡Sí! Siempre tienen que decirte por qué te paran y qué van a hacer.',
         },
         {
-            imagen: require('../../assets/images/Policias seguridad.png'),
-            pregunta: '¿Te sentirías cómodo/a pidiendo ayuda a la policía?',
+            imagen: require('../../assets/images/bomberos.png'),
+            pregunta: '¿Puedes pedir ayuda a los bomberos si ves un peligro?',
             respuestaCorrecta: true,
-            explicacion: 'La policía debe ayudarte y escucharte con respeto. Si alguna vez te sientes perdido/a, inseguro/a o necesitas ayuda, puedes acudir a ellos junto a una persona adulta de confianza.',
-        },
-        {
-            imagen: require('../../assets/images/Paramedicos seguridad.svg'),
-            pregunta: '¿Crees que las personas de atención a la salud te cuidarían si te encuentras mal?',
-            respuestaCorrecta: true,
-            explicacion: 'Las personas de atención médica están para cuidar tu salud y ayudarte cuando no te sientes bien. Deben tratarte con respeto y hacerte sentir seguro/a.',
-        },
-        {
-            imagen: require('../../assets/images/Servicios sociales seguridad.png'),
-            pregunta: '¿Podrías hablar con una educadora o trabajadora social si necesitas ayuda?',
-            respuestaCorrecta: true,
-            explicacion: 'Las educadoras y trabajadoras sociales están para acompañarte y ayudarte cuando tienes un problema o necesitas hablar. Tus emociones, dudas y necesidades son importantes.',
+            explicacion: '¡Claro que sí! Los bomberos y los servicios de emergencia están para ayudarte. Llama al 112.',
         },
     ],
 };
@@ -174,6 +132,7 @@ export default function PantallaAprende() {
         const esCorrecta = respuesta === escenarioActual.respuestaCorrecta;
         return (
             <View style={styles.container}>
+                {/* Header */}
                 <View style={[styles.header, { backgroundColor: categoriaData.color }]}>
                     <TouchableOpacity onPress={reiniciar}>
                         <Text style={styles.headerBack}>← </Text>
@@ -183,24 +142,35 @@ export default function PantallaAprende() {
                 </View>
 
                 <ScrollView contentContainerStyle={styles.escenarioContenido}>
+                    {/* Imagen */}
                     <Image
                         source={escenarioActual.imagen}
                         style={styles.imagen}
                         resizeMode="cover"
                     />
+
+                    {/* Pregunta */}
                     <Text style={styles.pregunta}>{escenarioActual.pregunta}</Text>
 
+                    {/* Botones SÍ / NO */}
                     {!mostrarExplicacion && (
                         <View style={styles.botonesRespuesta}>
-                            <TouchableOpacity style={[styles.botonNo]} onPress={() => responder(false)}>
+                            <TouchableOpacity
+                                style={[styles.botonNo]}
+                                onPress={() => responder(false)}
+                            >
                                 <Text style={styles.botonRespuestaTexto}>❌ NO</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[styles.botonSi]} onPress={() => responder(true)}>
+                            <TouchableOpacity
+                                style={[styles.botonSi]}
+                                onPress={() => responder(true)}
+                            >
                                 <Text style={styles.botonRespuestaTexto}>✅ SÍ</Text>
                             </TouchableOpacity>
                         </View>
                     )}
 
+                    {/* Explicación */}
                     {mostrarExplicacion && (
                         <View style={[styles.explicacionCaja, { borderColor: esCorrecta ? '#43A047' : '#E53935' }]}>
                             <Text style={styles.explicacionEmoji}>{esCorrecta ? '✅' : '❌'}</Text>
@@ -254,6 +224,8 @@ export default function PantallaAprende() {
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#FFFDF7' },
     centrado: { justifyContent: 'center', alignItems: 'center', padding: 30 },
+
+    // Header categoría activa
     header: {
         flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
         paddingHorizontal: 16, paddingVertical: 12, paddingTop: 50,
@@ -261,6 +233,8 @@ const styles = StyleSheet.create({
     headerBack: { color: '#fff', fontSize: 20, fontWeight: '700' },
     headerTitulo: { color: '#fff', fontSize: 16, fontWeight: '700', flex: 1, textAlign: 'center' },
     headerProgreso: { color: '#fff', fontSize: 14, fontWeight: '600' },
+
+    // Escenario
     escenarioContenido: { padding: 20 },
     imagen: { width: '100%', height: 240, borderRadius: 20, marginBottom: 20 },
     pregunta: {
@@ -279,6 +253,8 @@ const styles = StyleSheet.create({
         shadowColor: '#43A047', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 6,
     },
     botonRespuestaTexto: { color: '#fff', fontSize: 22, fontWeight: '900', letterSpacing: 2 },
+
+    // Explicación
     explicacionCaja: {
         backgroundColor: '#fff', borderRadius: 20, borderWidth: 3,
         padding: 20, alignItems: 'center', marginTop: 8,
@@ -290,6 +266,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 32, paddingVertical: 14, borderRadius: 50, alignItems: 'center', width: '100%',
     },
     botonTexto: { color: '#fff', fontSize: 16, fontWeight: '700' },
+
+    // Pantalla categorías
     aprendeHeader: { paddingTop: 60, paddingHorizontal: 24, paddingBottom: 16 },
     aprendeTitulo: { fontSize: 26, fontWeight: '900', color: '#1a1a2e', marginBottom: 4 },
     aprendeSubtitulo: { fontSize: 16, color: '#888' },
@@ -302,6 +280,8 @@ const styles = StyleSheet.create({
     categoriaEmoji: { fontSize: 48, marginBottom: 8 },
     categoriaNombre: { fontSize: 18, fontWeight: '800', marginBottom: 4 },
     categoriaInfo: { fontSize: 13, color: '#aaa' },
+
+    // Pantalla final
     finEmoji: { fontSize: 64, marginBottom: 12 },
     finTitulo: { fontSize: 28, fontWeight: '900', color: '#1a1a2e', marginBottom: 4 },
     finSubtitulo: { fontSize: 16, color: '#888', marginBottom: 12 },

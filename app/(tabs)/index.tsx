@@ -424,12 +424,6 @@ export default function PantallaMapa() {
         ))}
       </ScrollView>
 
-      {/* BOTÓN FLOTANTE CUENTO CONTIGO */}
-      {centroSeleccionado && (
-        <TouchableOpacity style={styles.botonFlotante} onPress={abrirModal}>
-          <Text style={styles.botonFlotanteTexto}>💬 Cuento contigo</Text>
-        </TouchableOpacity>
-      )}
       {centroSeleccionado && (
         <Animated.View style={[styles.panel, { transform: [{ translateY: panelTranslate }] }]}>
           <View style={[styles.panelBarra, { backgroundColor: color }]} />
