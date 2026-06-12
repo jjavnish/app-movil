@@ -16,25 +16,25 @@ const CATEGORIAS = [
 const ESCENARIOS: { [key: string]: { imagen: any; pregunta: string; respuestaCorrecta: boolean; explicacion: string }[] } = {
     salud: [
         {
-            imagen: require('../../assets/images/Recepcion Salud.png'),
+            imagen: require('../../assets/images/RecepcionSalud.png'),
             pregunta: '¿Te sentiste bien recibido/a al ingresar al centro de salud?',
             respuestaCorrecta: true,
             explicacion: 'Debes sentirte bien recibido o recibida en los espacios públicos de atención. Deben hablar en calma y con palabras agradables. Siempre debes estar acompañado/a de una persona adulta.',
         },
         {
-            imagen: require('../../assets/images/Escucha Salud.png'),
+            imagen: require('../../assets/images/EscuchaSalud.png'),
             pregunta: '¿La persona que te atendió escuchó cómo te sentías?',
             respuestaCorrecta: true,
             explicacion: 'Deben escuchar atentamente tus necesidades, es tu cuerpo el que revisarán y tienen que saber qué es lo que te pasa.',
         },
         {
-            imagen: require('../../assets/images/Revisión Salud.png'),
+            imagen: require('../../assets/images/RevisionSalud.png'),
             pregunta: '¿Te avisaron antes de tocar tu cuerpo para revisarlo?',
             respuestaCorrecta: true,
             explicacion: '¡Tu cuerpo es tuyo! Y deben explicarte que van a tocarlo para la revisión médica. Es importante que entiendas lo que están revisando de tu cuerpo y que te sientas seguro/a mientras lo hacen.',
         },
         {
-            imagen: require('../../assets/images/Salida cap.png'), 
+            imagen: require('../../assets/images/SalidaCap.png'),
             pregunta: '¿Te has ido del centro de salud sintiéndote bien por el trato recibido?',
             respuestaCorrecta: true,
             explicacion: 'Muchas veces no nos agrada asistir a los centros de salud. Pero, si nos tratan bien y nos sentimos seguros/as, ¡la experiencia es mucho mejor! Asegúrate de haber recibido un buen trato.',
@@ -42,7 +42,7 @@ const ESCENARIOS: { [key: string]: { imagen: any; pregunta: string; respuestaCor
     ],
     escuela: [
         {
-            imagen: require('../../assets/images/Entrada escuela.png'), // OK
+            imagen: require('../../assets/images/EntradaEscuela.png'),
             pregunta: '¿Sientes que te reconocen cuando entras a la escuela?',
             respuestaCorrecta: true,
             explicacion: 'Eres una persona importante. ¡Deben reconocerte y hacerte sentir parte de este espacio!',
@@ -60,7 +60,7 @@ const ESCENARIOS: { [key: string]: { imagen: any; pregunta: string; respuestaCor
             explicacion: 'El derecho a jugar es de todos y todas. Debes asistir a una escuela donde te sientas tranquilo/a para jugar y aprender.',
         },
         {
-            imagen: require('../../assets/images/Lavabos escuela.png'),
+            imagen: require('../../assets/images/LavabosEscuela.png'),
             pregunta: '¿Puedes usar todos los espacios de la escuela cuando lo necesitas?',
             respuestaCorrecta: true,
             explicacion: 'Debes tener acceso y facilidad para estar en todos los espacios de la escuela. Debes sentirte cómodo/a y seguro/a.',
@@ -68,7 +68,7 @@ const ESCENARIOS: { [key: string]: { imagen: any; pregunta: string; respuestaCor
     ],
     cultural: [
         {
-            imagen: require('../../assets/images/Entrada casal.png'),
+            imagen: require('../../assets/images/EntradaCasal.png'),
             pregunta: '¿Las personas te reciben bien cuando llegas?',
             respuestaCorrecta: true,
             explicacion: 'Eres una persona importante. ¡Deben reconocerte y hacerte sentir parte de este espacio!',
@@ -80,7 +80,7 @@ const ESCENARIOS: { [key: string]: { imagen: any; pregunta: string; respuestaCor
             explicacion: 'Todas las personas tenemos derecho a participar de actividades que nos gusten. ¡Recuerda siempre participar con respeto en un grupo!',
         },
         {
-            imagen: require('../../assets/images/Escucha clase cultural.png'),
+            imagen: require('../../assets/images/EscuchaClaseCultural.png'),
             pregunta: '¿Sientes que las personas adultas del centro te escuchan cuando hablas?',
             respuestaCorrecta: true,
             explicacion: 'Tus emociones y sentimientos son muy importantes y valiosos. Debes sentir que te escuchan con atención y atienden a tus necesidades.',
@@ -94,7 +94,7 @@ const ESCENARIOS: { [key: string]: { imagen: any; pregunta: string; respuestaCor
             explicacion: 'Los y las bomberos están para ayudar y proteger a las personas cuando ocurre una emergencia. Debes sentirte seguro/a y poder pedir ayuda si la necesitas.',
         },
         {
-            imagen: require('../../assets/images/Policias seguridad.png'),
+            imagen: require('../../assets/images/PoliciasSeguridad.png'),
             pregunta: '¿Te sentirías cómodo/a pidiendo ayuda a la policía?',
             respuestaCorrecta: true,
             explicacion: 'La policía debe ayudarte y escucharte con respeto. Si alguna vez te sientes perdido/a, inseguro/a o necesitas ayuda, puedes acudir a ellos junto a una persona adulta de confianza.',
@@ -106,7 +106,7 @@ const ESCENARIOS: { [key: string]: { imagen: any; pregunta: string; respuestaCor
             explicacion: 'Las personas de atención médica están para cuidar tu salud y ayudarte cuando no te sientes bien. Deben tratarte con respeto y hacerte sentir seguro/a.',
         },
         {
-            imagen: require('../../assets/images/Servicios sociales seguridad.png'),
+            imagen: require('../../assets/images/ServiciosSocialesSeguridad.png'),
             pregunta: '¿Podrías hablar con una educadora o trabajadora social si necesitas ayuda?',
             respuestaCorrecta: true,
             explicacion: 'Las educadoras y trabajadoras sociales están para acompañarte y ayudarte cuando tienes un problema o necesitas hablar. Tus emociones, dudas y necesidades son importantes.',
@@ -154,7 +154,6 @@ export default function PantallaAprende() {
         setFinalizado(false);
     };
 
-    // PANTALLA FINAL
     if (finalizado && categoriaData) {
         return (
             <View style={[styles.container, styles.centrado]}>
@@ -169,7 +168,6 @@ export default function PantallaAprende() {
         );
     }
 
-    // PANTALLA DE ESCENARIO
     if (categoriaActiva && escenarioActual && categoriaData) {
         const esCorrecta = respuesta === escenarioActual.respuestaCorrecta;
         return (
@@ -181,15 +179,9 @@ export default function PantallaAprende() {
                     <Text style={styles.headerTitulo}>{categoriaData.emoji} {categoriaData.nombre}</Text>
                     <Text style={styles.headerProgreso}>{escenarioIndex + 1}/{escenarios.length}</Text>
                 </View>
-
                 <ScrollView contentContainerStyle={styles.escenarioContenido}>
-                    <Image
-                        source={escenarioActual.imagen}
-                        style={styles.imagen}
-                        resizeMode="cover"
-                    />
+                    <Image source={escenarioActual.imagen} style={styles.imagen} resizeMode="cover" />
                     <Text style={styles.pregunta}>{escenarioActual.pregunta}</Text>
-
                     {!mostrarExplicacion && (
                         <View style={styles.botonesRespuesta}>
                             <TouchableOpacity style={[styles.botonNo]} onPress={() => responder(false)}>
@@ -200,15 +192,11 @@ export default function PantallaAprende() {
                             </TouchableOpacity>
                         </View>
                     )}
-
                     {mostrarExplicacion && (
                         <View style={[styles.explicacionCaja, { borderColor: esCorrecta ? '#43A047' : '#E53935' }]}>
                             <Text style={styles.explicacionEmoji}>{esCorrecta ? '✅' : '❌'}</Text>
                             <Text style={styles.explicacionTexto}>{escenarioActual.explicacion}</Text>
-                            <TouchableOpacity
-                                style={[styles.botonSiguiente, { backgroundColor: categoriaData.color }]}
-                                onPress={siguiente}
-                            >
+                            <TouchableOpacity style={[styles.botonSiguiente, { backgroundColor: categoriaData.color }]} onPress={siguiente}>
                                 <Text style={styles.botonTexto}>
                                     {escenarioIndex + 1 >= escenarios.length ? '¡Terminar!' : 'Siguiente →'}
                                 </Text>
@@ -220,7 +208,6 @@ export default function PantallaAprende() {
         );
     }
 
-    // PANTALLA DE CATEGORÍAS
     return (
         <View style={styles.container}>
             <View style={styles.aprendeHeader}>
@@ -263,40 +250,31 @@ const styles = StyleSheet.create({
     headerProgreso: { color: '#fff', fontSize: 14, fontWeight: '600' },
     escenarioContenido: { padding: 20 },
     imagen: { width: '100%', height: 240, borderRadius: 20, marginBottom: 20 },
-    pregunta: {
-        fontSize: 20, fontWeight: '800', color: '#1a1a2e',
-        textAlign: 'center', marginBottom: 28, lineHeight: 28,
-    },
+    pregunta: { fontSize: 20, fontWeight: '800', color: '#1a1a2e', textAlign: 'center', marginBottom: 28, lineHeight: 28 },
     botonesRespuesta: { flexDirection: 'row', gap: 16, justifyContent: 'center' },
     botonNo: {
-        flex: 1, backgroundColor: '#E53935', borderRadius: 50,
-        paddingVertical: 18, alignItems: 'center',
+        flex: 1, backgroundColor: '#E53935', borderRadius: 50, paddingVertical: 18, alignItems: 'center',
         shadowColor: '#E53935', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 6,
     },
     botonSi: {
-        flex: 1, backgroundColor: '#43A047', borderRadius: 50,
-        paddingVertical: 18, alignItems: 'center',
+        flex: 1, backgroundColor: '#43A047', borderRadius: 50, paddingVertical: 18, alignItems: 'center',
         shadowColor: '#43A047', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 6,
     },
     botonRespuestaTexto: { color: '#fff', fontSize: 22, fontWeight: '900', letterSpacing: 2 },
     explicacionCaja: {
-        backgroundColor: '#fff', borderRadius: 20, borderWidth: 3,
-        padding: 20, alignItems: 'center', marginTop: 8,
+        backgroundColor: '#fff', borderRadius: 20, borderWidth: 3, padding: 20, alignItems: 'center', marginTop: 8,
         shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 8, elevation: 4,
     },
     explicacionEmoji: { fontSize: 40, marginBottom: 8 },
     explicacionTexto: { fontSize: 16, color: '#333', textAlign: 'center', lineHeight: 24, marginBottom: 16 },
-    botonSiguiente: {
-        paddingHorizontal: 32, paddingVertical: 14, borderRadius: 50, alignItems: 'center', width: '100%',
-    },
+    botonSiguiente: { paddingHorizontal: 32, paddingVertical: 14, borderRadius: 50, alignItems: 'center', width: '100%' },
     botonTexto: { color: '#fff', fontSize: 16, fontWeight: '700' },
     aprendeHeader: { paddingTop: 60, paddingHorizontal: 24, paddingBottom: 16 },
     aprendeTitulo: { fontSize: 26, fontWeight: '900', color: '#1a1a2e', marginBottom: 4 },
     aprendeSubtitulo: { fontSize: 16, color: '#888' },
     categoriasGrid: { padding: 16, gap: 16 },
     categoriaCard: {
-        backgroundColor: '#fff', borderRadius: 20, borderWidth: 3,
-        padding: 24, alignItems: 'center',
+        backgroundColor: '#fff', borderRadius: 20, borderWidth: 3, padding: 24, alignItems: 'center',
         shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 8, elevation: 4,
     },
     categoriaEmoji: { fontSize: 48, marginBottom: 8 },

@@ -21,12 +21,12 @@ export default function PantallaBienvenida({ onFinish }: Props) {
       <Image source={require('../assets/images/logo2.png')} style={styles.logoGrande} resizeMode="contain" />
       <View style={styles.logosAbajo}>
         <Image
-          source={require('../assets/images/ES_Co-fundedbytheEU_RGB_Monochrome.png')}
+          source={require('../assets/images/ESCoFunded.png')}
           style={styles.logoSmall}
           resizeMode="contain"
         />
         <Image
-          source={require('../assets/images/ESP educarcura-Pantone341.png')}
+          source={require('../assets/images/ESPeducarcura.png')}
           style={styles.logoSmall}
           resizeMode="contain"
         />

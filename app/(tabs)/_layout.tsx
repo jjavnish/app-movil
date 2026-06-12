@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import React, { useState } from 'react';
-import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
@@ -40,7 +40,8 @@ export default function TabLayout() {
     setEnviado(false);
     setTexto('');
   };
-    if (mostrarSplash) {
+
+  if (mostrarSplash) {
     return <PantallaBienvenida onFinish={() => setMostrarSplash(false)} />;
   }
 
@@ -88,7 +89,10 @@ export default function TabLayout() {
 
       <Modal visible={modalVisible} transparent animationType="slide" onRequestClose={cerrar}>
         <View style={styles.fondo}>
-          <View style={styles.caja}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.caja}
+          >
             {enviado ? (
               <>
                 <Text style={styles.graciasEmoji}>💬</Text>
@@ -125,7 +129,7 @@ export default function TabLayout() {
                 </TouchableOpacity>
               </>
             )}
-          </View>
+          </KeyboardAvoidingView>
         </View>
       </Modal>
     </>

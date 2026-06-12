@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import MapView, { Marker, Polygon } from 'react-native-maps';
 const FelicidadSvg = require('../../assets/images/Felicidad.png');
-const NeutroSvg = require('../../assets/images/Emociones encontradas.png');
+const NeutroSvg = require('../../assets/images/EmocionesEncontradas.png');
 const TristeSvg = require('../../assets/images/Tristeza.png');
 
 const API_URL = 'https://noubarris-backend.onrender.com/api/centros';
