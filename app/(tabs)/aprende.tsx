@@ -100,7 +100,7 @@ const ESCENARIOS: { [key: string]: { imagen: any; pregunta: string; respuestaCor
             explicacion: 'La policía debe ayudarte y escucharte con respeto. Si alguna vez te sientes perdido/a, inseguro/a o necesitas ayuda, puedes acudir a ellos junto a una persona adulta de confianza.',
         },
         {
-            imagen: require('../../assets/images/Paramedicos seguridad.svg'),
+            imagen: require('../../assets/images/ParamedicosSeguridad.svg'),
             pregunta: '¿Crees que las personas de atención a la salud te cuidarían si te encuentras mal?',
             respuestaCorrecta: true,
             explicacion: 'Las personas de atención médica están para cuidar tu salud y ayudarte cuando no te sientes bien. Deben tratarte con respeto y hacerte sentir seguro/a.',
